@@ -3,6 +3,7 @@ package com.weekify.auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weekify.auth.dto.*;
 import com.weekify.auth.service.AuthService;
+import com.weekify.common.exception.CommonErrorCode;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -144,7 +145,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
+                .andExpect(jsonPath("$.code").value(CommonErrorCode.INVALID_REQUEST.getCode()))
                 .andExpect(jsonPath("$.errors[0].field").value("refreshToken"));
     }
 
@@ -158,7 +159,7 @@ class AuthControllerTest {
                         }
                         """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
+                .andExpect(jsonPath("$.code").value(CommonErrorCode.INVALID_REQUEST.getCode()))
                 .andExpect(jsonPath("$.errors[0].field").value("refreshToken"));
     }
 
@@ -172,7 +173,7 @@ class AuthControllerTest {
                         }
                         """))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
+                .andExpect(jsonPath("$.code").value(CommonErrorCode.INVALID_REQUEST.getCode()))
                 .andExpect(jsonPath("$.errors[0].field").value("refreshToken"));
     }
 

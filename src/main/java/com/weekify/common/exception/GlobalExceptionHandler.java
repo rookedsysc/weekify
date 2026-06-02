@@ -17,14 +17,11 @@ import java.util.List;
 // GlobalExceptionHandler에 @ExceptionHandler 기반의 예외 헨들러 메서드를 정의하며, 발생한 예외를 공통 ErrorResponse 형식으로 변환한다.
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     private final MessageSource messageSource;
 
-    public GlobalExceptionHandler(MessageSource messageSource){
-        this.messageSource = messageSource;
-        System.out.println("🔥 GlobalExceptionHandler loaded");
-    }
 
     private String getMessage(ErrorCode errorCode){
         return messageSource.getMessage(
