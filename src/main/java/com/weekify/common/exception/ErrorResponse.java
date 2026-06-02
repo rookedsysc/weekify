@@ -8,28 +8,24 @@ public record ErrorResponse(
         String message,
         List<FieldErrorResponse> errors
 ) {
-    // from(ErrorCode) : ErrorCode에 정의된 기본 메시지 그대로 사용
-    public static ErrorResponse from(ErrorCode errorCode){
+    // ErrorCode의 code는 유지하고, 다국어 처리된 message를 주입한다.
+    public static ErrorResponse of(ErrorCode errorCode, String message){
         return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getMessage(),
-                List.of()
+            errorCode.getCode(),
+            message,
+            List.of()
         );
     }
 
-    // of(ErrorCode, message) : ErrorCode의 code는 유지하고, message만 지정
-    public static ErrorResponse of(ErrorCode errorCode, String message){
+    // validation error처럼 field errors가 있는 경우 사용한다
+    public static ErrorResponse of(
+        ErrorCode errorCode,
+        String message,
+        List<FieldErrorResponse> errors
+    ){
         return new ErrorResponse(
                 errorCode.getCode(),
                 message,
-                List.of()
-        );
-    }
-
-    public static ErrorResponse of(ErrorCode errorCode, List<FieldErrorResponse> errors){
-        return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getMessage(),
                 errors
         );
     }

@@ -10,8 +10,8 @@ public record LoginRequest(
                 example = "user@example.com",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        @NotBlank(message = "이메일은 필수입니다.")
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
+        @NotBlank(message = "{validation.email.required}")
+        @Email(message = "{validation.email.invalid}")
         String email,
 
         @Schema(
@@ -19,7 +19,7 @@ public record LoginRequest(
                 example = "Password123!",
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        @NotBlank(message = "비밀번호는 핋수입니다.")
+        @NotBlank(message = "{validation.password.required}")
         String password
 ) {
 }

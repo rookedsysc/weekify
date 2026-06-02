@@ -4,31 +4,40 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 @Getter
 public enum CommonErrorCode implements ErrorCode {
+
     INVALID_REQUEST(
             HttpStatus.BAD_REQUEST,
-            "INVALID_REQUEST",
-            "잘못된 요청입니다."
+            "COMMON_001",
+            "common.invalid-request"
     ),
 
     INTERNAL_SERVER_ERROR(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "INTERNAL_SERVER_ERROR",
-            "서버 내부 오류가 발생했습니다."
+            "COMMON_002",
+            "common.internal-server-error"
+
     ),
 
     UNKNOWN_ERROR(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "UNKNOWN_ERROR",
-            "알 수 없는 서버 오류가 발생했습니다."
-    );
+            "COMMON_003",
+            "common.unknown-error"
+    ),
+
+    INVALID_REQUEST_BODY(
+            HttpStatus.BAD_REQUEST,
+            "COMMON_004",
+            "common.invalid-request-body"
+    )
+    ;
 
     private final HttpStatus status;
     private final String code;
-    private final String message;
+    private final String messageKey;
 
-    CommonErrorCode(HttpStatus status, String code, String message){
+    CommonErrorCode(HttpStatus status, String code, String messageKey){
         this.status = status;
         this.code = code;
-        this.message = message;
+        this.messageKey = messageKey;
     }
 }
