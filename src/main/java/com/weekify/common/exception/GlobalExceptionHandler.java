@@ -1,6 +1,10 @@
 package com.weekify.common.exception;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,21 +19,30 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final MessageSource messageSource;
+
+    public GlobalExceptionHandler(MessageSource messageSource){
+        this.messageSource = messageSource;
+        System.out.println("🔥 GlobalExceptionHandler loaded");
+    }
+
+    private String getMessage(ErrorCode errorCode){
+        return messageSource.getMessage(
+                errorCode.getMessageKey(),
+                null,
+                errorCode.getCode(),
+                LocaleContextHolder.getLocale()
+        );
+    }
+
     // BusinessException을 처리하는 예외 핸들러 메서드
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(
-            BaseException e
-    ){
+    public ResponseEntity<ErrorResponse> handleBusinessException(BaseException e){
         ErrorCode errorCode = e.getErrorCode();
-
-        ErrorResponse response = ErrorResponse.of(
-                errorCode,
-                e.getMessage()
-        );
 
         return ResponseEntity
                 .status(errorCode.getStatus())
-                .body(response);
+                .body(ErrorResponse.of(errorCode, getMessage(errorCode)));
     }
 
     /*
@@ -49,6 +62,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e
     ){
+        ErrorCode errorCode = CommonErrorCode.INVALID_REQUEST;
+
         List<FieldErrorResponse> errors = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -58,15 +73,9 @@ public class GlobalExceptionHandler {
                 ))
                 .toList();
 
-        ErrorResponse response = ErrorResponse.of(
-                CommonErrorCode.INVALID_REQUEST,
-                errors
-        );
-
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
-
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode, getMessage(errorCode), errors));
     }
 
     /*
@@ -81,25 +90,23 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
-        HttpMessageNotReadableException ex
+        HttpMessageNotReadableException e
     ){
+        ErrorCode errorCode = CommonErrorCode.INVALID_REQUEST_BODY;
+
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(
-                        CommonErrorCode.INVALID_REQUEST,
-                        "요청 본문 형식이 올바르지 않습니다."
-                ));
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode, getMessage(errorCode)));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e){
         log.error("Unhandled exception occurred", e);
 
-        CommonErrorCode commonErrorCode = CommonErrorCode.UNKNOWN_ERROR;
-        ErrorResponse response = ErrorResponse.from(commonErrorCode);
+        ErrorCode errorCode = CommonErrorCode.UNKNOWN_ERROR;
 
         return ResponseEntity
-                .status(commonErrorCode.getStatus())
-                .body(response);
+                .status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode, getMessage(errorCode)));
     }
 }

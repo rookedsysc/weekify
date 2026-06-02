@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassword {
 
-    String message() default "비밀번호는 8자 이상 64자 이하이며, 영문자, 숫자, 특수문자를 포함해야 합니다.";
+    String message() default "{validation.password.invalid}";
 
     Class<?>[] groups() default {};
 

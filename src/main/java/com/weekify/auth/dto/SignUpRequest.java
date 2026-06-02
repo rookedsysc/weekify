@@ -11,23 +11,23 @@ import java.time.LocalDate;
 
 public record SignUpRequest(
 
-        @NotBlank(message = "이메일은 필수입니다.")
-        @Email(message = "올바른 이메일 형식이 아닙니다.")
+        @NotBlank(message = "{validation.email.required}")
+        @Email(message = "{validation.email.invalid}")
         String email,
 
-        @NotBlank(message = "비밀번호는 필수입니다.")
+        @NotBlank(message = "{validation.password.required}")
         @ValidPassword
         String password,
 
-        @NotBlank(message = "이름은 필수입니다.")
-        @Size(max = 50, message = "이름은 50자 이하로 입력해주세요.")
+        @NotBlank(message = "{validation.name.required}")
+        @Size(max = 50, message = "{validation.name.size}")
         String name,
 
-        @NotBlank(message = "전화번호는 필수입니다.")
+        @NotBlank(message = "{validation.tel.required}")
         String tel,
 
         // 2026-05-21 리뷰 오타 수정
-        @NotNull(message = "생년월일은 필수입니다.")
+        @NotNull(message = "{validation.birth-date.required}")
         LocalDate birthDate,
 
         @Schema(
@@ -36,7 +36,7 @@ public record SignUpRequest(
                 nullable = false,
                 requiredMode = Schema.RequiredMode.REQUIRED
         )
-        @NotBlank(message = "주소는 필수입니다.")
+        @NotBlank(message = "{validation.address.required}")
         String address,
 
         String profileImageUrl

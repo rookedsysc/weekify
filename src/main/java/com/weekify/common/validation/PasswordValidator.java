@@ -15,17 +15,25 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
 
         if(password.length() < MIN_LENGTH || password.length() > MAX_LENGTH)return false;
 
-        boolean hasLetter = password.chars().anyMatch(Character::isLetter);
-        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasLetter = password.chars()
+                .anyMatch(ch -> (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'));
+        boolean hasDigit = password.chars()
+                .anyMatch(ch -> ch >= '0' && ch <= '9');
+
+        boolean hasWhitespace = password.chars()
+                .anyMatch(Character::isWhitespace);
+
+        if(hasWhitespace){
+            return false;
+        }
 
         // 문자, 숫자가 아닌 문자가 하나라도 포함되어 있으면 true
         boolean hasSpecialCharacter = password.chars()
-                .anyMatch(ch -> !Character.isLetterOrDigit(ch));
-
-        // 공백도 특수문자로 볼 수 있기 때문에 공백 포함 막기
-        boolean hasWhitespace = password.chars().anyMatch(Character::isWhitespace);
-
-        if(hasWhitespace)return false;
+                .anyMatch(ch ->
+                        !((ch >= 'A' && ch <= 'Z')
+                                || (ch >= 'a' && ch <= 'z')
+                                || (ch >= '0' && ch <= '9'))
+                );
 
         return hasLetter && hasDigit && hasSpecialCharacter;
     }
